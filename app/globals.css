@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #F5F0E8;
+  --dark: #1A1510;
+  --gold: #C9A84C;
+  --gold-light: #E8D5A3;
+  --muted: #8B7355;
+  --accent: #2C1810;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--cream);
+  color: var(--dark);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
+
+::selection { background: var(--gold-light); color: var(--dark); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+.grain-overlay {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.btn-gold {
+  background: var(--gold); color: var(--dark);
+  padding: 12px 32px; font-family: 'Jost', sans-serif;
+  font-weight: 400; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 12px; border: none; cursor: pointer;
+  transition: all 0.3s ease; display: inline-block;
+}
+.btn-gold:hover { background: var(--dark); color: var(--gold); }
+
+.btn-outline {
+  border: 1px solid var(--gold); color: var(--gold);
+  padding: 12px 32px; font-family: 'Jost', sans-serif;
+  font-weight: 400; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 12px; background: transparent; cursor: pointer;
+  transition: all 0.3s ease; display: inline-block;
+}
+.btn-outline:hover { background: var(--gold); color: var(--dark); }
+
+.product-card {
+  background: white; transition: all 0.4s ease;
+  overflow: hidden; position: relative;
+}
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(26,21,16,0.15); }
+.product-card::before {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 100%; height: 2px; background: var(--gold);
+  transform: scaleX(0); transition: transform 0.4s ease;
+}
+.product-card:hover::before { transform: scaleX(1); }
+
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,4rem); font-weight: 300; letter-spacing: -0.02em; }
+.section-subtitle { font-family: 'Jost', sans-serif; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; font-size: 11px; color: var(--gold); }
+.divider { width: 60px; height: 1px; background: var(--gold); margin: 16px auto; }
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in-up { animation: fadeInUp 0.8s ease forwards; }
+
+@keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+.skeleton { background: linear-gradient(90deg, #f0ebe3 25%, #e8e0d4 50%, #f0ebe3 75%); background-size: 1000px 100%; animation: shimmer 2s infinite; }
+
+.nav-link { font-family: 'Jost', sans-serif; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; font-size: 11px; color: var(--dark); text-decoration: none; transition: color 0.3s; position: relative; }
+.nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: var(--gold); transition: width 0.3s ease; }
+.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.nav-link:hover, .nav-link.active { color: var(--gold); }
+
+.status-badge { padding: 4px 12px; border-radius: 2px; font-size: 11px; font-weight: 400; letter-spacing: 1px; text-transform: uppercase; }
+.status-pending { color: #D97706; background: #FEF3C7; }
+.status-confirmed { color: #2563EB; background: #DBEAFE; }
+.status-shipped { color: #7C3AED; background: #EDE9FE; }
+.status-delivered { color: #059669; background: #D1FAE5; }
+.status-cancelled { color: #DC2626; background: #FEE2E2; }
+
+.glass { background: rgba(245,240,232,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(201,168,76,0.2); }
+
+input, textarea, select {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  background: white;
+  border: 1px solid #E8DFD0;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--dark);
+  transition: border-color 0.3s;
+  outline: none;
+  width: 100%;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--gold); }
