@@ -7,7 +7,7 @@ import type { Profile } from '@/lib/supabase'
 
 type AuthContextType = {
   user: User | null
-  profile: Profile | null
+  profile: Profile | null | undefined
   loading: boolean
   signOut: () => Promise<void>
   isAdmin: boolean
@@ -15,7 +15,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  profile: null,
+  profile: undefined,
   loading: true,
   signOut: async () => {},
   isAdmin: false,
@@ -23,20 +23,29 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfile] = useState<Profile | null | undefined>(undefined)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+      } else {
+        setProfile(null)
+        setLoading(false)
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else { setProfile(null); setLoading(false) }
+      if (session?.user) {
+        setProfile(undefined) // Reset — fetch shuru ho rahi hai
+        fetchProfile(session.user.id)
+      } else {
+        setProfile(null)
+        setLoading(false)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -48,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .select('*')
       .eq('id', userId)
       .single()
-    setProfile(data)
+    setProfile(data ?? null)
     setLoading(false)
   }
 
@@ -59,7 +68,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signOut, isAdmin: profile?.role === 'admin' }}>
+    <AuthContext.Provider value={{
+      user,
+      profile,   // undefined = still fetching, null = fetched (no data), Profile = fetched (has data)
+      loading,
+      signOut,
+      isAdmin: profile?.role === 'admin'
+    }}>
       {children}
     </AuthContext.Provider>
   )

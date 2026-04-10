@@ -8,16 +8,30 @@ import { LayoutDashboard, Package, ShoppingBag, LogOut, Plus, ChevronRight } fro
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, profile, loading, signOut, isAdmin } = useAuth()
+  console.log(user, "user");
+  console.log(isAdmin, "isAdmin");
+  console.log(profile, "profile");
+  console.log(loading, "loading");
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) router.push('/')
-  }, [user, isAdmin, loading])
+    // Sirf redirect karo jab:
+    // 1. Auth loading khatam ho gayi
+    // 2. User logged in hai toh profile bhi aa gayi ho (null = fetched but not found, undefined = still fetching)
+    const profileLoaded = profile !== undefined
+    if (!loading && profileLoaded) {
+      if (!user || !isAdmin) router.push('/')
+    }
+  }, [user, profile, isAdmin, loading])
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontFamily: 'Cormorant Garamond', fontSize: '28px', color: 'var(--cream)', opacity: 0.5 }}>Loading...</div>
+  // Auth load ho raha hai ya user hai lekin profile abhi fetch ho rahi hai
+  const stillLoading = loading || (user != null && profile === undefined)
+
+  if (stillLoading) return (
+    <div style={{ minHeight: '100vh', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ fontFamily: 'Cormorant Garamond', fontSize: '32px', fontWeight: 300, color: 'var(--cream)', letterSpacing: '-0.02em' }}>Itra</div>
+      <div style={{ fontSize: '10px', letterSpacing: '4px', color: 'var(--gold)', textTransform: 'uppercase' }}>Loading...</div>
     </div>
   )
 
