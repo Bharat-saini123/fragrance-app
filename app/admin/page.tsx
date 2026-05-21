@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import { Package, ShoppingBag, Users, TrendingUp, Clock, ArrowRight } from 'lucide-react'
-import type { Order } from '@/lib/supabase'
+import type { Order } from '@/lib/supabase';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, revenue: 0 })
